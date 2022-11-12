@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ImageVideoTaskState {
+  INITED // 新建
+  GENERATING // 生成中
+  DONE // 已完成
+}
+
+model ImageVideoTask {
+  id         Int                 @id @default(autoincrement())
+  src        String              @unique
+  width      Int                 @default(1920)
+  height     Int                 @default(1080)
+  originX    Float               @default(0.5)
+  originY    Float               @default(0.5)
+  clipTop    Float               @default(0)
+  clipRight  Float               @default(0)
+  clipBottom Float               @default(0)
+  clipLeft   Float               @default(0)
+  state      ImageVideoTaskState @default(INITED)
+  updateAt   DateTime            @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.DateTime
+
+  @@index([state])
+}
+
+model AudioToSrtTask {
+  id         Int                 @id @default(autoincrement())
+  src        String              @unique
+  start      String
+  end        String
+  state      ImageVideoTaskState @default(INITED)
+  updateAt   DateTime            @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.DateTime
+
+  @@index([state])
+}

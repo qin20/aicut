@@ -1,0 +1,61 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "coverage": false,
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/python/asr",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "command": "npm run audio-to-video",
+            "name": "成片 (audio-to-video.ts)",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run dev",
+            "name": "选图片 (www)",
+            "cwd": "${workspaceFolder}/www",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run video-to-image",
+            "name": "加图片 (video-to-image.ts)",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run jianying-import",
+            "name": "导入剪映素材 (jianying-import.ts)",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run audio-to-srt",
+            "name": "字幕素材 (audio-to-srt.ts)",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run video-to-video",
+            "name": "视频素材 (video-to-video.ts)",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run image-to-video",
+            "name": "图片素材 (image-to-video.ts)",
+            "request": "launch",
+            "type": "node-terminal"
+        }
+    ]
+}

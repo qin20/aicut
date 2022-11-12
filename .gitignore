@@ -1,0 +1,12 @@
+.*
+!.eslint*
+!.gitignore
+!.vscode
+
+exp
+bin
+node_modules
+*output*
+pretrained_models
+
+Adobe*

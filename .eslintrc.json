@@ -1,0 +1,34 @@
+{
+    "env": {
+        "es2021": true,
+        "node": true,
+        "browser": true
+    },
+    "extends": [
+        "xo"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 13,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "arrow-body-style": ["off", "always"],
+        "arrow-parens": ["error", "always"],
+        "indent": ["error", 4],
+        "no-await-in-loop": "off",
+        "no-constant-condition": ["error", { "checkLoops": false }],
+        "object-curly-spacing": ["error", "always"],
+        "capitalized-comments": "off",
+        "max-params": "off",
+        "operator-assignment": "off",
+        "camelcase": "off",
+        "padding-line-between-statements": "off",
+        "new-cap": "off",
+        "no-restricted-imports": "off",
+        "no-unused-vars": "warn"
+    }
+}
