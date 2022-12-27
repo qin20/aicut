@@ -31,7 +31,6 @@ const now = Date.now();
 await allSettled(images.map((img, i) => (
     () => ffmpeg(
         `-ss "${numberToTime(img.time)}" -i "${img.source.src}" -vframes 1 -q:v 2 "${OUTPUt}/${now}_${index(i)}.jpg"`,
-        '生成视频图片',
     )
 )));
 

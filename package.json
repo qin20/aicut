@@ -6,13 +6,14 @@
   "main": "index.js",
   "scripts": {
     "ts": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js",
-    "get-clips": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/getClips.ts",
-    "video-to-video": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/video-to-video.ts",
-    "video-to-image": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/video-to-image.ts",
-    "image-to-video": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/image-to-video.ts",
-    "audio-to-srt": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/audio-to-srt.ts",
-    "audio-to-video": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/audio-to-video.ts",
-    "jianying-import": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" node --experimental-specifier-resolution=node --loader ./loader.js src/jianying-import.ts"
+    "get-clips": "npm run ts -- src/getClips.ts",
+    "video-to-video": "npm run ts -- src/video-to-video.ts",
+    "video-to-image": "npm run ts -- src/video-to-image.ts",
+    "image-to-video": "npm run ts -- src/image-to-video.ts",
+    "audio-to-srt": "npm run ts -- src/audio-to-srt.ts",
+    "audio-to-video": "npm run ts -- src/audio-to-video.ts",
+    "jianying-import": "npm run ts -- src/jianying-import.ts",
+    "audio-to-picth": "npm run ts -- src/audio-to-picth.ts"
   },
   "keywords": [],
   "author": "",

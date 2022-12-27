@@ -13,13 +13,15 @@ export async function allSettled <T=any>(
     results: T[];
     allResults: PromiseSettledResult<Awaited<T>>[];
 }> {
-    const { max = 10 } = options || {};
+    const { max = 5 } = options || {};
     const allResults: PromiseSettledResult<Awaited<T>>[] = [];
     logger.info(`开始执行任务: ${promises.length}，并发${max}`);
     const bar = progress('正在执行任务', promises.length).start();
     const maxLength = promises.length;
     const now = Date.now();
     let count = 0;
+    const { level } = logger;
+    logger.level = 'fatal'; // 禁用输出
     while (promises.length) {
         const ret = await Promise.allSettled(promises.splice(0, max).map(async (f) => {
             const start = Date.now();
@@ -31,6 +33,7 @@ export async function allSettled <T=any>(
         allResults.push(...ret);
     }
     bar.stop();
+    logger.level = level || 'info';
     logger.info(`执行任务完成，耗时: ${numberToTime(Date.now() - now)}。`);
     return {
         results: allResults.filter((r) => r.status === 'fulfilled').map((r: any) => r.value as T),

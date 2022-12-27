@@ -27,7 +27,6 @@ const random = async (name: string, duration: string) => {
     for await (const clip of clips) {
         await ffmpeg(
             `-i "${clip.source.src}" -ss "${numberToTime(clip.start)}" -to "${numberToTime(clip.end)}" -intra -c:v copy "${output}/${index++}.mp4"`,
-            '切割视频片段',
         );
     }
 };

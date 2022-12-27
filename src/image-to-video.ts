@@ -8,9 +8,24 @@ import { ffmpeg } from '~/utils/media';
 import { db } from '~/utils/db.server';
 import { logger } from '~/utils/logger';
 import { range } from '~/utils/range';
+import { createDir } from './utils/createDir';
 
-const targetWidth = 1920;
-const targetHeight = 1080;
+/**
+ * 图片转视频说明：
+ * 1. 选运行`加图片`、`选图片`两个程序选好图片
+ * 2. 再运行本程序把选好的图片转成视频
+ */
+
+// ------------↓修改参数↓-----------------//
+const VIDEO_DEST = 'E:/drama/小说/诛仙/素材/图片视频'; // 输出成片的路径
+const VIDEO_WIDTH = 1920;
+const VIDEO_HEIGHT = 1080;
+const VIDEO_RATE = 25; // 帧率
+const VIDEO_SPEED = 1.3; // 图片变化的快慢
+// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑//
+
+const TEMP_DIR = createDir('D:/dev/aicut/.temp/image-to-video', false);
+const TEMP_DIR_IMGS = `${TEMP_DIR}/imgs`;
 
 const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
@@ -60,10 +75,10 @@ async function createImage(task: ImageVideoTask) {
         const originX = task.width * (task.originX);
         const originY = task.height * (task.originY);
 
-        if (width / height > targetWidth / targetHeight) {
-            width = targetWidth / targetHeight * height;
+        if (width / height > VIDEO_WIDTH / VIDEO_HEIGHT) {
+            width = VIDEO_WIDTH / VIDEO_HEIGHT * height;
         } else {
-            height = targetHeight / targetWidth * width;
+            height = VIDEO_HEIGHT / VIDEO_WIDTH * width;
         }
 
         return {
@@ -100,25 +115,18 @@ async function createImage(task: ImageVideoTask) {
             const data = canvas.toDataURL();
             canvas = null as any;
             return data;
-        }, imgBox, scale, targetWidth, targetHeight);
+        }, imgBox, scale, VIDEO_WIDTH, VIDEO_HEIGHT);
         return dataUrl;
     }
 
-    const output = './output/imgs';
-    if (fs.existsSync(output)) {
-        fs.rmdirSync(output, { recursive: true });
-    }
-
-    fs.mkdirSync(output);
-
+    const output = createDir(TEMP_DIR_IMGS, true);
     const { src } = task;
-    const imgSrc = `data:image/jpeg;base64,${readFileSync(src, 'base64')}`;
+    const imgSrc = `data:image/jpeg;base64,${readFileSync(`E:/drama/小说/诛仙/素材/图片/${path.basename(src)}`, 'base64')}`;
     await page.setContent(`<img id="task_image" src="${imgSrc}" />`);
-    const frames = 30 * 12; // 帧 * 秒
-    const scale = 1.3; // 放大两倍
+    const frames = VIDEO_RATE * 12; // 帧 * 秒
 
     await allSettled(range(frames).map((i) => async () => {
-        const s = 1 + ((i / frames) * (scale - 1));
+        const s = 1 + ((i / frames) * (VIDEO_SPEED - 1));
         const dataUrl = await drawIamge(s);
         saveImage(dataUrl, `${formatIndex(i)}`, output);
     }), { max: 5 });
@@ -127,28 +135,30 @@ async function createImage(task: ImageVideoTask) {
 }
 
 async function run() {
-    const allTasks = await db.imageVideoTask.findMany({ orderBy: { id: 'asc' } });
-    const tasks = allTasks.filter((t) => t.state === 'INITED');
-    logger.info(`任务：${allTasks.length - tasks.length + 1}/${allTasks.length}`);
+    const tasks = (await db.imageVideoTask.findMany({
+        where: { src: { contains: '诛仙' }, state: 'INITED' },
+        orderBy: { id: 'asc' },
+    }));
+
     if (tasks.length) {
-        const task = tasks[0];
-        try {
-            await createImage(task);
+        await allSettled(tasks.map((task) => async () => {
+            const src = `E:/drama/小说/诛仙/素材/图片/${path.basename(task.src)}`;
             await ffmpeg(
-                `-r 23 -start_number 0 -i "%04d.png" -c:v libx264 -pix_fmt yuv420p -vf pad="1920:1080:(1920-iw)/2:(1080-ih)/2:color=black" -r 23 "E:/drama/小说/凡人修仙传/素材图片/${path.basename(task.src)}.mp4"`,
-                { cwd: 'D:\\dev\\aicut\\output\\imgs' },
+                `-framerate 25 -loop 1 -i "${src}" -filter_complex "[0:v]scale=iw*10:ih*10,zoompan=z='zoom+(0.3/300)':x='iw*${task.originX}-(iw/zoom*${task.originX})':y='ih*${task.originY}-(ih/zoom*${task.originX})':fps=25:d=300,trim=duration=12[v1];[v1]scale=1920:1080[v]" -map "[v]" "${VIDEO_DEST}/${path.basename(task.src)}_ffmpeg.mp4"`,
             );
             await db.imageVideoTask.update({ data: { state: 'DONE' }, where: { src: task.src } });
-            logger.info(`任务完成，${tasks.length}`);
-        } catch (e: any) {
-            await db.imageVideoTask.update({ data: { state: 'INITED' }, where: { src: task.src } });
-            console.error(e);
-        }
+        }));
     }
 
     setTimeout(() => {
+        logger.info('正在查询图片...');
         run();
-    }, 1000);
+    }, 5000);
 }
 
-run();
+try {
+    run();
+} catch (e: any) {
+    logger.error(e);
+    process.exit(1);
+}

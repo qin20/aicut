@@ -19,12 +19,13 @@ export function exec(command, options = {}) {
         const [cmd, args] = formatCommand(command);
         const descr = `exec:${execId++} "${options.description || ''}"`;
         const start = new Date();
+        const output = 'output' in options ? options.output : 'inherit';
 
         logger.info(`${descr} ${command}`);
 
         const cp = spawn(cmd, args, {
             cwd: root,
-            stdio: 'inherit',
+            stdio: output,
             shell: true,
             ...options,
         });
@@ -40,7 +41,7 @@ export function exec(command, options = {}) {
                 logger.error(error);
                 reject(new Error(`${descr}失败`));
             } else {
-                logger.debug(`${descr}成功，耗时${duration(start, new Date())}`);
+                logger.info(`${descr}成功，耗时${duration(start, new Date())}`);
                 resolve();
             }
         });

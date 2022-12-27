@@ -15,6 +15,18 @@
             "justMyCode": false
         },
         {
+            "command": "npm run ts -- src/audio-to-picth.ts",
+            "name": "变声（audio-to-picth）",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run ts -- src/rename.ts",
+            "name": "rename",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
             "command": "npm run audio-to-video",
             "name": "成片 (audio-to-video.ts)",
             "request": "launch",

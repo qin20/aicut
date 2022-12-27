@@ -32,14 +32,3 @@ model ImageVideoTask {
 
   @@index([state])
 }
-
-model AudioToSrtTask {
-  id         Int                 @id @default(autoincrement())
-  src        String              @unique
-  start      String
-  end        String
-  state      ImageVideoTaskState @default(INITED)
-  updateAt   DateTime            @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.DateTime
-
-  @@index([state])
-}

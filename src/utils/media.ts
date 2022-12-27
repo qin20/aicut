@@ -5,11 +5,11 @@ import { exec, execGetOutput } from './exec';
 
 import type { SpawnOptions } from 'child_process';
 
-const binPath = path.resolve('./bin/');
+const binPath = path.resolve('./ffmpeg/bin/').replace(/\\/g, '/');
 
 export function ffmpeg(cmd: string, options?: SpawnOptions) {
     return exec(
-        `${binPath}/ffmpeg -hwaccel cuda -y -hide_banner -loglevel error ${cmd}`,
+        `${binPath}/ffmpeg -y -hide_banner -loglevel error ${cmd}`,
         options,
     );
 }

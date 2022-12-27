@@ -36,9 +36,11 @@ if __name__ == "__main__":
     # OUTPUT = "E:/drama/小说/诛仙/成片/0002.mp3.mp4"
 
     # program start
-    padding = 2
-    clips = list(map(lambda v: VideoFileClip(v).crossfadein(padding), SOURCE_VIDEOS))
-    video = concatenate_videoclips(clips, padding=-padding, method="compose")
+    # padding = 2
+    # clips = list(map(lambda v: VideoFileClip(v).crossfadein(padding), SOURCE_VIDEOS))
+    # video = concatenate_videoclips(clips, padding=-padding, method="compose")
+    clips = list(map(lambda v: VideoFileClip(v), SOURCE_VIDEOS))
+    video = concatenate_videoclips(clips)
     # video = video.crop(
     #     y1=math.ceil(1080*0.12),
     #     y2=1080 - math.ceil(1080*0.12),
@@ -65,4 +67,5 @@ if __name__ == "__main__":
     # 合成输出
     # video = CompositeVideoClip([video, subtitles])
     video = video.subclip(0, audio.duration)
-    video.write_videofile(OUTPUT, threads=4, fps=30, preset='ultrafast')
+    print(audio.duration)
+    video.write_videofile(OUTPUT, fps=24)
